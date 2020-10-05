@@ -30,17 +30,17 @@ class Board
 
   def make_board
     board = []
+    board.push([' ', ' A', ' B', ' C', ' D', ' E', ' F', ' G', ' H', "\n"])
     for i in 0..7
       temp = []
-      temp.push("#{8 - i} ")
+      temp.push("#{i + 1} ")
       for j in 0..7
-        temp.push("#{@pieces[i][j]}".bpc) if (i + j).even?
-        temp.push("#{@pieces[i][j]}".bsc) if (i + j).odd?
+        temp.push("#{@pieces[i][j]}".bpc) if (i + j).odd?
+        temp.push("#{@pieces[i][j]}".bsc) if (i + j).even?
       end
       temp.push("\n")
       board.push(temp)
     end
-    board.push([' ', ' A', ' B', ' C', ' D', ' E', ' F', ' G', ' H', "\n"])
     board
   end
 end

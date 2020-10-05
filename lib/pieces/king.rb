@@ -27,7 +27,7 @@ class Black_King
   end
 end
 
-class White_king
+class White_King
   attr_accessor :piece, :history
   attr_reader :moves
   def initialize
