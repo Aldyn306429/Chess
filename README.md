@@ -1,7 +1,7 @@
 What to work on next:
     **Write tests for everything you worked on previously
 
-    1) Pieces established correctly in the @piece array in pieces/pieces.rb
+    1) Input pieces to get ready to move the pieces
     2) Pieces to actually move on board
     3) Add legal and illegal moves
     4) Add special cases in game_master.rb
