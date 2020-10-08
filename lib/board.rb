@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'pieces/pieces.rb'
+
 class String
   # colorization
   def colorize(color_code)
@@ -35,8 +37,16 @@ class Board
       temp = []
       temp.push("#{i + 1} ")
       for j in 0..7
-        temp.push("#{@pieces[i][j]}".bpc) if (i + j).odd?
-        temp.push("#{@pieces[i][j]}".bsc) if (i + j).even?
+        if (i + j).odd? && @pieces[i][j] != '  '
+          temp.push("#{@pieces[i][j].piece}".bpc) 
+        elsif (i + j).odd?
+          temp.push('  '.bpc)
+        end
+        if (i + j).even? && @pieces[i][j] != '  '
+          temp.push("#{@pieces[i][j].piece}".bsc)
+        elsif (i + j).even?
+          temp.push('  ')
+        end
       end
       temp.push("\n")
       board.push(temp)
@@ -45,5 +55,6 @@ class Board
   end
 end
 
-a = Board.new
+pieces = Pieces.new
+a = Board.new(pieces.pieces_pos)
 puts a.display_board
