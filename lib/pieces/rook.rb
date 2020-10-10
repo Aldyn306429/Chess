@@ -4,7 +4,7 @@ require_relative 'pieces.rb'
 
 class Black_Rook
   attr_accessor :piece, :history
-  attr_reader :moves
+  attr_reader :moves, :identity
   def initialize
     @piece = "\u265c ".dark_piece
     @moves = []
@@ -12,15 +12,40 @@ class Black_Rook
     @identity = 'black'
   end
 
-  def possible_moves(x, y)
+  def possible_moves(x, y, blocked_moves = nil)
     temp = []
+
+    # To prevent pieces from going through even though they can't
+    test1 = true # For going left
+    test2 = true # For going right
+    test3 = true # For going up
+    test4 = true # For going down
 
     # Horizontal and vertical possible moves
     for i in 1..7 do
-      temp.push([x, y - i]) if (y - i).between?(0, 7)
-      temp.push([x, y + i]) if (y + i).between?(0, 7)
-      temp.push([x - i, y]) if (x - i).between?(0, 7)
-      temp.push([x + i, y]) if (x + i).between?(0, 7)
+      if !blocked_moves.nil?
+        if (y - i).between?(0, 7) && blocked_moves[x][y - i] != '  '
+          temp.push([x, y - i]) if blocked_moves[x][y - i].identity == 'white' && test1 == true
+          test1 = false
+        end
+        if (y + i).between?(0, 7) && blocked_moves[x][y + i] != '  '
+          temp.push([x, y + i]) if blocked_moves[x][y + i].identity == 'white' && test2 == true
+          test2 = false
+        end
+        if (x - i).between?(0, 7) && blocked_moves[x - i][y] != '  '
+          temp.push([x - i, y]) if blocked_moves[x - i][y].identity == 'white' && test3 == true
+          test3 = false
+        end
+        if (x + i).between?(0, 7) && blocked_moves[x + i][y] != '  '
+          temp.push([x + i, y]) if blocked_moves[x + i][y].identity == 'white' && test4 == true
+          test4 = false
+        end
+      end
+
+      temp.push([x, y - i]) if (y - i).between?(0, 7) && test1
+      temp.push([x, y + i]) if (y + i).between?(0, 7) && test2
+      temp.push([x - i, y]) if (x - i).between?(0, 7) && test3
+      temp.push([x + i, y]) if (x + i).between?(0, 7) && test4
     end
     @moves = temp
   end
@@ -28,7 +53,7 @@ end
 
 class White_Rook
   attr_accessor :piece, :history
-  attr_reader :moves
+  attr_reader :moves, :identity
   def initialize
     @piece = "\u265c ".light_piece
     @moves = []
@@ -36,15 +61,39 @@ class White_Rook
     @identity = 'white'
   end
 
-  def possible_moves(x, y)
+  def possible_moves(x, y, blocked_moves = nil)
     temp = []
+
+    test1 = true # For going left
+    test2 = true # For going right
+    test3 = true # For going up
+    test4 = true # For going down
 
     # Horizontal and vertical possible moves
     for i in 1..7 do
-      temp.push([x, y - i]) if (y - i).between?(0, 7)
-      temp.push([x, y + i]) if (y + i).between?(0, 7)
-      temp.push([x - i, y]) if (x - i).between?(0, 7)
-      temp.push([x + i, y]) if (x + i).between?(0, 7)
+      if !blocked_moves.nil?
+        if (y - i).between?(0, 7) && blocked_moves[x][y - i] != '  '
+          temp.push([x, y - i]) if blocked_moves[x][y - i].identity == 'black' && test1 == true
+          test1 = false
+        end
+        if (y + i).between?(0, 7) && blocked_moves[x][y + i] != '  '
+          temp.push([x, y + i]) if blocked_moves[x][y + i].identity == 'black' && test2 == true
+          test2 = false
+        end
+        if (x - i).between?(0, 7) && blocked_moves[x - i][y] != '  '
+          temp.push([x - i, y]) if blocked_moves[x - i][y].identity == 'black' && test3 == true
+          test3 = false
+        end
+        if (x + i).between?(0, 7) && blocked_moves[x + i][y] != '  '
+          temp.push([x + i, y]) if blocked_moves[x + i][y].identity == 'black' && test4 == true
+          test4 = false
+        end
+      end
+
+      temp.push([x, y - i]) if (y - i).between?(0, 7) && test1
+      temp.push([x, y + i]) if (y + i).between?(0, 7) && test2
+      temp.push([x - i, y]) if (x - i).between?(0, 7) && test3
+      temp.push([x + i, y]) if (x + i).between?(0, 7) && test4
     end
     @moves = temp
   end

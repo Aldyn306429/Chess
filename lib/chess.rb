@@ -20,6 +20,13 @@ class Game
 
   def intro
     # start_game
+    # for i in 0..7
+    #   for j in 0..7
+    #     if @board.pieces[i][j] != '  '
+    #       p @board.pieces[i][j].possible_moves(i, j, @board.pieces)
+    #     end
+    #   end
+    # end
   end
 
   def start_game
@@ -45,7 +52,7 @@ class Game
       puts 'Piece not in the board'
       return false 
     end
-    if illegal?(@board.pieces[start_pos[1]][start_pos[0]].possible_moves(start_pos[1], start_pos[0]), [end_pos[1], end_pos[0]])
+    if illegal?(@board.pieces[start_pos[1]][start_pos[0]].possible_moves(start_pos[1], start_pos[0], @board.pieces), [end_pos[1], end_pos[0]])
       puts 'Illegal move'
       return false 
     end
