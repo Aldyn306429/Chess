@@ -44,12 +44,12 @@ describe 'Tests' do
           subject { White_King.new}
           it 'Outputs the correct possible moves' do
             test = [[4, 3], [5, 3], [3, 3], [5, 4], [3, 4], [4, 5], [3, 5], [5, 5]]
-            moves = subject.possible_moves(4, 4)
+            moves = subject.possible_moves(4, 4, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Does not output moves outside of the board' do
             test = [[0, 1], [1, 0], [1, 1]]
-            moves = subject.possible_moves(0, 0)
+            moves = subject.possible_moves(0, 0, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Produces the correct possible moves when castling is available' do
@@ -60,12 +60,12 @@ describe 'Tests' do
           subject { Black_King.new}
           it 'Outputs the correct possible moves' do
             test = [[4, 4], [5, 4], [6, 4], [6, 5], [4, 5], [4, 6], [5, 6], [6, 6]]
-            moves = subject.possible_moves(5, 5)
+            moves = subject.possible_moves(5, 5, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Does not output moves outside of the board' do
             test = [[6, 7], [7, 6], [6, 6]]
-            moves = subject.possible_moves(7, 7)
+            moves = subject.possible_moves(7, 7, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Produces the correct possible moves when castling is available' do
@@ -80,12 +80,12 @@ describe 'Tests' do
           subject { White_Knight.new}
           it 'Outputs the correct possible moves' do
             test = [[2, 1], [4, 1], [1, 2], [5, 2], [1, 4], [5, 4], [2, 5], [4, 5]]
-            moves = subject.possible_moves(3, 3)
+            moves = subject.possible_moves(3, 3, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Does not output moves outside the board' do
             test = [[2, 1], [1, 2]]
-            moves = subject.possible_moves(0, 0)
+            moves = subject.possible_moves(0, 0, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
         end
@@ -93,12 +93,12 @@ describe 'Tests' do
           subject { Black_Knight.new}
           it 'Outputs the correct possible moves' do
             test = [[6, 3], [7, 4], [3, 4], [4, 3], [3, 6], [7, 6], [4, 7], [6, 7]]
-            moves = subject.possible_moves(5, 5)
+            moves = subject.possible_moves(5, 5, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Does not output moves outside the board' do
             test = [[6, 5], [5, 6]]
-            moves = subject.possible_moves(7, 7)
+            moves = subject.possible_moves(7, 7, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
         end
@@ -110,13 +110,13 @@ describe 'Tests' do
           subject { White_Pawn.new }
           it 'Outputs the correct possible moves when starting' do
             test = [[4, 0], [5, 0]]
-            moves = subject.possible_moves(6, 0)
+            moves = subject.possible_moves(6, 0, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Outputs the correct possible moves after moved already' do
             test = Game.new
             test.make_move('C7 : C5')
-            moves = test.board.pieces[3][2].possible_moves(3, 2)
+            moves = test.board.pieces[3][2].possible_moves(3, 2, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql([[4, 2]])
           end
         end
@@ -124,13 +124,13 @@ describe 'Tests' do
           subject { Black_Pawn.new }
           it 'Outputs the correct possible moves when starting' do
             test = [[3, 0], [2, 0]]
-            moves = subject.possible_moves(1, 0)
+            moves = subject.possible_moves(1, 0, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
           it 'Outputs the correct possible moves after moved already' do
             test = Game.new
             test.make_move('D7 : D5')
-            moves = test.board.pieces[3][3].possible_moves(3, 3)
+            moves = test.board.pieces[3][3].possible_moves(3, 3, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql([[4, 3]])
           end
         end
@@ -242,24 +242,38 @@ describe 'Tests' do
         expect(subject.make_move('E1 : C1')).to eql(false) 
       end
       it 'Legal moves for kings(2)' do
+        subject.make_move('D2 : D4')
         expect(subject.make_move('E1 : D2')).to_not eql(false)
       end
       it 'Legal moves for queens(1)' do
         expect(subject.make_move('D1 : E8')).to eql(false) 
       end
       it 'Legal moves for queens(2)' do
+        subject.make_move('D2 : D4')
+        subject.make_move('E7 : E5')
+        subject.make_move('D4 : E5')
+        subject.make_move('D7 : D5')
+        subject.make_move('C2 : C4')
+        subject.make_move('D5 : C4')
         expect(subject.make_move('D1 : D8')).to_not eql(false)
       end
       it 'Legal moves for rooks(1)' do
         expect(subject.make_move('A1 : B8')).to eql(false) 
       end
       it 'Legal moves for rooks(2)' do
+        subject.make_move('A2 : A4')
+        subject.make_move('B2 : B4')
+        subject.make_move('A7 : A5')
+        subject.make_move('B7 : B5')
+        subject.make_move('A4 : B5')
+        subject.make_move('A5 : B4')
         expect(subject.make_move('A1 : A8')).to_not eql(false)
       end
       it 'Legal moves for bishops(1)' do
         expect(subject.make_move('C1 : B1')).to eql(false) 
       end
       it 'Legal moves for bishops(2)' do
+        subject.make_move('B2 : B3')
         expect(subject.make_move('C1 : B2')).to_not eql(false)
       end
     end
