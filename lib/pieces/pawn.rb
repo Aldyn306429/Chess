@@ -15,8 +15,8 @@ class Black_Pawn
   # One-step and two-step moves
   def possible_moves(x, y)
     temp = []
-    temp.push([x, y + 1]) if (y + 1).between?(0, 7)
-    temp.push([x, y + 2]) if @history.empty?
+    temp.push([x + 1, y]) if (x + 1).between?(0, 7)
+    temp.push([x + 2, y]) if @history.empty?
     @moves = temp
   end
 end
@@ -34,8 +34,8 @@ class White_Pawn
   # One-step and two-step moves
   def possible_moves(x, y)
     temp = []
-    temp.push([x, y - 1]) if (y - 1).between?(0, 7)
-    temp.push([x, y - 2]) if @history.empty?
+    temp.push([x - 1, y]) if (x - 1).between?(0, 7)
+    temp.push([x - 2, y]) if @history.empty?
     @moves = temp
   end
 end

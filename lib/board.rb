@@ -19,23 +19,22 @@ end
   
 class Board
   attr_reader :board
+  attr_accessor :pieces
   def initialize(pieces)
     @pieces = pieces
-    @board = make_board
+    make_board
   end
 
   def display_board
     @board.join
   end
   
-  private
-
   def make_board
     board = []
     board.push([' ', ' A', ' B', ' C', ' D', ' E', ' F', ' G', ' H', "\n"])
     for i in 0..7
       temp = []
-      temp.push("#{i + 1} ")
+      temp.push("#{8 - i} ")
       for j in 0..7
         if (i + j).odd? && @pieces[i][j] != '  '
           temp.push("#{@pieces[i][j].piece}".bpc) 
@@ -45,16 +44,14 @@ class Board
         if (i + j).even? && @pieces[i][j] != '  '
           temp.push("#{@pieces[i][j].piece}".bsc)
         elsif (i + j).even?
-          temp.push('  ')
+          temp.push('  '.bsc)
         end
       end
+      temp.push(" #{8 - i}")
       temp.push("\n")
       board.push(temp)
     end
-    board
+    board.push(['  ', ' A', ' B', ' C', ' D', ' E', ' F', ' G', ' H', "\n"])
+    @board = board
   end
 end
-
-pieces = Pieces.new
-a = Board.new(pieces.pieces_pos)
-puts a.display_board
