@@ -1,10 +1,8 @@
 What to work on next:
     **Write tests for everything you worked on previously
 
-    1) Input pieces to get ready to move the pieces
-    2) Pieces to actually move on board
-    3) Add legal and illegal moves
-    4) Add special cases in game_master.rb
+    1) Add special cases in game_master.rb
+        - Pieces blocking in front of each other
         - Checks
         - En-passante for pawns
         - Castling moves for kings and rooks
@@ -13,11 +11,11 @@ What to work on next:
         - Promotions
         - Correct possible moves for new promotion pieces
         - Checkmate
-    5) Add Players' names for user interface
-    6) Add directions and rules
-    7) Add saving and loading games
-    8) Tidy up everything and make sure everything works fine
-    9) Play a game of chess with anyone
+    2) Add Players' names for user interface
+    3) Add directions and rules
+    4) Add saving and loading games
+    5) Tidy up everything and make sure everything works fine
+    6) Play a game of chess with anyone
 
 This is a ruby project for the classical Chess game.
 
