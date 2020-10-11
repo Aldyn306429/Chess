@@ -277,6 +277,77 @@ describe 'Tests' do
         expect(subject.make_move('C1 : B2')).to_not eql(false)
       end
     end
+    context '#check?' do
+      subject { Game.new }
+      it 'Returns true when king is checked(1)' do
+        subject.make_move('C2 : C3', 'white')
+        subject.make_move('D1 : A4', 'white')
+        subject.make_move('A4 : D7', 'white')
+        expect(subject.king_in_check).to eql(true)
+      end
+      it 'Returns true when king is checked(2)' do
+        subject.make_move('C2 : C3', 'white')
+        subject.make_move('D7 : D6', 'black')
+        subject.make_move('D1 : A4', 'white')
+        subject.make_move('C8 : D7', 'black')
+        subject.make_move('A4 : D7', 'white')
+        expect(subject.king_in_check).to eql(true)
+      end
+      it 'Returns false when king is not checked' do
+        subject.make_move('C2 : C3', 'white')
+        subject.make_move('D7 : D6', 'black')
+        subject.make_move('C8 : D7', 'black')
+        subject.make_move('D1 : A4', 'white')
+        subject.make_move('H7 : H6', 'black')
+        expect(subject.king_in_check).to eql(false)
+      end
+    end
+    context 'En Passant' do
+      subject { Game.new }
+      it 'En Passant for dark piece to the left' do
+        subject.make_move('D7 : D5')
+        subject.make_move('D5 : D4')
+        subject.make_move('C2 : D4')
+        subject.make_move('D4 : C3')
+        expect(subject.board.pieces[4][2] == '  ')
+      end
+      it 'En Passant for dark piece to the right' do
+        subject.make_move('B7 : B5')
+        subject.make_move('B5 : B4')
+        subject.make_move('C2 : C4')
+        subject.make_move('B4 : C3')
+        expect(subject.board.pieces[4][2] == '  ')
+      end
+      it 'En Passant for light piece to the left' do
+        subject.make_move('G2 : G4')
+        subject.make_move('G4 : G5')
+        subject.make_move('F7 : F5')
+        subject.make_move('G5 : F6')
+        expect(subject.board.pieces[3][5] == '  ')
+      end
+      it 'En Passant for light piece to the right' do
+        subject.make_move('C2 : C4')
+        subject.make_move('C4 : C5')
+        subject.make_move('D7 : D5')
+        subject.make_move('C5 : D6')
+        expect(subject.board.pieces[3][3] == '  ')
+      end
+      it 'En Passant disappears after one move' do
+        subject.make_move('C2 : C4')
+        subject.make_move('C4 : C5')
+        subject.make_move('D7 : D5')
+        subject.make_move('A2 : A3')
+        expect(subject.board.pieces[3][2].possible_moves(3, 2, subject.board.pieces).include?([2, 3])).to eql(false)
+      end
+      it 'En Passant disappears after one move but new En Passant appears' do
+        subject.make_move('C2 : C4')
+        subject.make_move('C4 : C5')
+        subject.make_move('D7 : D5')
+        subject.make_move('B7 : B5')
+        subject.make_move('C5 : B6')
+        expect(subject.board.pieces[4][1] == '  ')
+      end
+    end
   end
   context 'Chess.rb' do
     return false

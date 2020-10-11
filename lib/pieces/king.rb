@@ -15,6 +15,18 @@ class Black_King
   # All surrounding moves
   def possible_moves(x, y, blocked_moves = nil)
     temp = []
+    if @history.empty?
+      if blocked_moves[0][0] != '  '
+        if blocked_moves[0][1] == '  ' && blocked_moves[0][2] == '  ' && blocked_moves[0][3] == '  '
+          temp.push([0, 2]) if blocked_moves[0][0].history.empty?
+        end
+      end
+      if blocked_moves[0][7] != '  '
+        if blocked_moves[0][5] == '  ' && blocked_moves[0][6] == '  '
+          temp.push([0, 6]) if blocked_moves[0][7].history.empty?
+        end
+      end
+    end
     if (x - 1).between?(0, 7) && (y - 1).between?(0, 7)
       if blocked_moves[x - 1][y - 1] == '  '
         temp.push([x - 1, y - 1])
@@ -88,6 +100,18 @@ class White_King
   # All surrounding moves
   def possible_moves(x, y, blocked_moves = nil)
     temp = []
+    if @history.empty?
+      if blocked_moves[7][0] != '  '
+        if blocked_moves[7][1] == '  ' && blocked_moves[7][2] == '  ' && blocked_moves[7][3] == '  '
+          temp.push([7, 2]) if blocked_moves[7][0].history.empty?
+        end
+      end
+      if blocked_moves[7][7] != '  '
+        if blocked_moves[7][5] == '  ' && blocked_moves[7][6] == '  '
+          temp.push([7, 6]) if blocked_moves[7][7].history.empty?
+        end
+      end
+    end
     if (x - 1).between?(0, 7) && (y - 1).between?(0, 7)
       if blocked_moves[x - 1][y - 1] == '  '
         temp.push([x - 1, y - 1])
