@@ -2,14 +2,12 @@ What to work on next:
     **Write tests for everything you worked on previously
 
     1) Add special cases in game_master.rb
-        - Castling moves for kings and rooks
-        - Promotions
-        - Correct possible moves for new promotion pieces
         - Checkmate
-        - No pieces left on the board to checkmate
+        - Stalemate
         - If king is in check, you can only move a piece that will get the king out of check
             - Breaking the check, make king_in_check variable to equal false
     2) Add Players' names for user interface
+        - DRAW? 
     3) Add directions and rules
     4) Add saving and loading games
     5) Tidy up everything and make sure everything works fine
