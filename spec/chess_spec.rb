@@ -41,7 +41,7 @@ describe 'Tests' do
     context 'King.rb' do
       context '#possible_moves' do
         context 'White_King' do
-          subject { White_King.new}
+          subject { White_King.new }
           it 'Outputs the correct possible moves' do
             test = [[4, 3], [5, 3], [3, 3], [5, 4], [3, 4], [4, 5], [3, 5], [5, 5]]
             moves = subject.possible_moves(4, 4, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
@@ -52,12 +52,24 @@ describe 'Tests' do
             moves = subject.possible_moves(0, 0, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
-          it 'Produces the correct possible moves when castling is available' do
-            return false
+          it 'Produces the correct possible moves when castling to kingside is available' do
+            game = Game.new
+            game.make_move('E2 : E4')
+            game.make_move('G1 : F3')
+            game.make_move('F1 : B5')
+            expect(game.board.pieces[7][4].possible_moves(7, 4, game.board.pieces).include?([7, 6]))
+          end
+          it 'Produces the correct possible moves when castling to queenside is available' do
+            game = Game.new
+            game.make_move('D2 : D4')
+            game.make_move('C1 : E3')
+            game.make_move('D1 : D2')
+            game.make_move('B1 : C3')
+            expect(game.board.pieces[7][4].possible_moves(7, 4, game.board.pieces).include?([7, 2]))
           end
         end
         context 'Black_King' do
-          subject { Black_King.new}
+          subject { Black_King.new }
           it 'Outputs the correct possible moves' do
             test = [[4, 4], [5, 4], [6, 4], [6, 5], [4, 5], [4, 6], [5, 6], [6, 6]]
             moves = subject.possible_moves(5, 5, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
@@ -68,8 +80,20 @@ describe 'Tests' do
             moves = subject.possible_moves(7, 7, Array.new(8, ['  ','  ','  ','  ','  ','  ','  ','  ']))
             expect(moves.sort).to eql(test.sort)
           end
-          it 'Produces the correct possible moves when castling is available' do
-            return false
+          it 'Produces the correct possible moves when castling to kingside is available' do
+            game = Game.new
+            game.make_move('E7 : E5')
+            game.make_move('F8 : C5')
+            game.make_move('G8 : F6')
+            expect(game.board.pieces[0][4].possible_moves(0, 4, game.board.pieces).include?([0, 6]))
+          end
+          it 'Produces the correct possible moves when castling to queenside is available' do
+            game = Game.new
+            game.make_move('D7 : D6')
+            game.make_move('C8 : E6')
+            game.make_move('B8 : C6')
+            game.make_move('D8 : D7')
+            expect(game.board.pieces[0][4].possible_moves(0, 4, game.board.pieces).include?([0, 2]))
           end
         end
       end
@@ -280,25 +304,24 @@ describe 'Tests' do
     context '#check?' do
       subject { Game.new }
       it 'Returns true when king is checked(1)' do
-        subject.make_move('C2 : C3', 'white')
-        subject.make_move('D1 : A4', 'white')
-        subject.make_move('A4 : D7', 'white')
+        subject.make_move('C2 : C3', 'White')
+        subject.make_move('D1 : A4', 'White')
+        subject.make_move('A4 : D7', 'White')
         expect(subject.king_in_check).to eql(true)
       end
       it 'Returns true when king is checked(2)' do
-        subject.make_move('C2 : C3', 'white')
-        subject.make_move('D7 : D6', 'black')
-        subject.make_move('D1 : A4', 'white')
-        subject.make_move('C8 : D7', 'black')
-        subject.make_move('A4 : D7', 'white')
+        subject.make_move('C2 : C3', 'White')
+        subject.make_move('D7 : D6', 'Black')
+        subject.make_move('D1 : A4', 'White')
+        subject.make_move('C8 : D7', 'Black')
+        subject.make_move('A4 : D7', 'White')
         expect(subject.king_in_check).to eql(true)
       end
       it 'Returns false when king is not checked' do
-        subject.make_move('C2 : C3', 'white')
-        subject.make_move('D7 : D6', 'black')
-        subject.make_move('C8 : D7', 'black')
-        subject.make_move('D1 : A4', 'white')
-        subject.make_move('H7 : H6', 'black')
+        subject.make_move('C2 : C3', 'White')
+        subject.make_move('D7 : D6', 'Black')
+        subject.make_move('C8 : D7', 'Black')
+        subject.make_move('D1 : A4', 'White')
         expect(subject.king_in_check).to eql(false)
       end
     end
@@ -309,28 +332,28 @@ describe 'Tests' do
         subject.make_move('D5 : D4')
         subject.make_move('C2 : D4')
         subject.make_move('D4 : C3')
-        expect(subject.board.pieces[4][2] == '  ')
+        expect(subject.board.pieces[4][2] == '  ').to eql(true)
       end
       it 'En Passant for dark piece to the right' do
         subject.make_move('B7 : B5')
         subject.make_move('B5 : B4')
         subject.make_move('C2 : C4')
         subject.make_move('B4 : C3')
-        expect(subject.board.pieces[4][2] == '  ')
+        expect(subject.board.pieces[4][2] == '  ').to eql(true)
       end
       it 'En Passant for light piece to the left' do
         subject.make_move('G2 : G4')
         subject.make_move('G4 : G5')
         subject.make_move('F7 : F5')
         subject.make_move('G5 : F6')
-        expect(subject.board.pieces[3][5] == '  ')
+        expect(subject.board.pieces[3][5] == '  ').to eql(true)
       end
       it 'En Passant for light piece to the right' do
         subject.make_move('C2 : C4')
         subject.make_move('C4 : C5')
         subject.make_move('D7 : D5')
         subject.make_move('C5 : D6')
-        expect(subject.board.pieces[3][3] == '  ')
+        expect(subject.board.pieces[3][3] == '  ').to eql(true)
       end
       it 'En Passant disappears after one move' do
         subject.make_move('C2 : C4')
@@ -345,12 +368,96 @@ describe 'Tests' do
         subject.make_move('D7 : D5')
         subject.make_move('B7 : B5')
         subject.make_move('C5 : B6')
-        expect(subject.board.pieces[4][1] == '  ')
+        expect(subject.board.pieces[4][1] == '  ').to eql(true)
       end
     end
   end
   context 'Chess.rb' do
-    return false
+    context 'Castling' do
+      subject { Game.new }
+      it 'Enemy sight in path will block castling' do
+        subject.make_move('D2 : D3')
+        subject.make_move('C1 : D2')
+        subject.make_move('E7 : E6')
+        subject.make_move('F8 : B4')
+        subject.make_move('G8 : F6')
+        subject.make_move('D2 : B4')
+        subject.make_move('E8 : G8')
+        expect(subject.board.pieces[0][4] == '  ').to eql(false)
+      end
+      it 'Enemy sight not in path will not block castling' do
+        subject.make_move('D2 : D3')
+        subject.make_move('C1 : D2')
+        subject.make_move('E7 : E6')
+        subject.make_move('F8 : E7')
+        subject.make_move('G8 : F6')
+        subject.make_move('D2 : B4')
+        subject.make_move('E8 : G8')
+        expect(subject.board.pieces[0][4] == '  ').to eql(true)
+      end
+      it 'Enemy sight in path will block castling' do
+        subject.make_move('D2 : D3')
+        subject.make_move('E7 : E6')
+        subject.make_move('C1 : G5')
+        subject.make_move('D7 : D6')
+        subject.make_move('C8 : H3')
+        subject.make_move('B8 : A6')
+        subject.make_move('D8 : D7')
+        subject.make_move('E8 : C8')
+        expect(subject.board.pieces[0][4] == '  ').to eql(false)
+      end
+      it 'Enemy sight not in path will not block castling' do
+        subject.make_move('D2 : D3')
+        subject.make_move('E7 : E6')
+        subject.make_move('C1 : G5')
+        subject.make_move('D7 : D6')
+        subject.make_move('C8 : D7')
+        subject.make_move('B8 : A6')
+        subject.make_move('D8 : E7')
+        subject.make_move('E8 : C8')
+        expect(subject.board.pieces[0][4] == '  ').to eql(true)
+      end
+      it 'Enemy sight in path will block castling' do
+        subject.make_move('E2 : E3')
+        subject.make_move('B7 : B6')
+        subject.make_move('F1 : A6')
+        subject.make_move('C8 : A6')
+        subject.make_move('G1 : F3')
+        subject.make_move('E1 : G1')
+        expect(subject.board.pieces[7][4] == '  ').to eql(false)
+      end
+      it 'Enemy sight in path will block castling' do
+        subject.make_move('E2 : E3')
+        subject.make_move('B7 : B6')
+        subject.make_move('F1 : E2')
+        subject.make_move('C8 : A6')
+        subject.make_move('G1 : F3')
+        subject.make_move('E1 : G1')
+        expect(subject.board.pieces[7][4] == '  ').to eql(true)
+      end
+      it 'Enemy sight not in path will not block castling' do
+        subject.make_move('D2 : D3')
+        subject.make_move('G7 : G6')
+        subject.make_move('C2 : C3')
+        subject.make_move('D1 : C2')
+        subject.make_move('C1 : H6')
+        subject.make_move('F8 : H6')
+        subject.make_move('B1 : A3')
+        subject.make_move('E1 : C1')
+        expect(subject.board.pieces[7][4] == '  ').to eql(false)
+      end
+      it 'Enemy sight not in path will not block castling' do
+        subject.make_move('D2 : D3')
+        subject.make_move('G7 : G6')
+        subject.make_move('C2 : C3')
+        subject.make_move('D1 : C2')
+        subject.make_move('C1 : D2')
+        subject.make_move('F8 : H6')
+        subject.make_move('B1 : A3')
+        subject.make_move('E1 : C1')
+        expect(subject.board.pieces[7][4] == '  ').to eql(true)
+      end
+    end
   end
   context 'Player.rb' do
     return false

@@ -4,7 +4,7 @@ class Player_one
   attr_reader :name, :side
   def initialize(name)
     @name = name
-    @side = 'white'
+    @side = 'White'
   end
 end
 
@@ -12,6 +12,6 @@ class Player_two
   attr_reader :name, :side
   def initialize(name)
     @name = name
-    @side = 'black'
+    @side = 'Black'
   end
 end

@@ -37,14 +37,14 @@ class Board
       temp.push("#{8 - i} ")
       for j in 0..7
         if (i + j).odd? && @pieces[i][j] != '  '
-          temp.push("#{@pieces[i][j].piece}".bpc) 
+          temp.push("#{@pieces[i][j].piece}".bsc) 
         elsif (i + j).odd?
-          temp.push('  '.bpc)
+          temp.push('  '.bsc)
         end
         if (i + j).even? && @pieces[i][j] != '  '
-          temp.push("#{@pieces[i][j].piece}".bsc)
+          temp.push("#{@pieces[i][j].piece}".bpc)
         elsif (i + j).even?
-          temp.push('  '.bsc)
+          temp.push('  '.bpc)
         end
       end
       temp.push(" #{8 - i}")

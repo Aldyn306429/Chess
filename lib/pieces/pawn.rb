@@ -31,17 +31,19 @@ class Black_Pawn
 
     # To take enemy pieces diagonally
     if (x + 1).between?(0, 7) && (y + 1).between?(0, 7) && blocked_moves[x + 1][y + 1] != '  '
-        temp.push([x + 1, y + 1]) if blocked_moves[x + 1][y + 1].identity == 'white'
+      temp.push([x + 1, y + 1]) if blocked_moves[x + 1][y + 1].identity == 'white'
+      @moves.push([x + 1, y + 1]) if blocked_moves[x + 1][y + 1].identity == 'white'
     end
     if (x + 1).between?(0, 7) && (y - 1).between?(0, 7) && blocked_moves[x + 1][y - 1] != '  '
       temp.push([x + 1, y - 1]) if blocked_moves[x + 1][y - 1].identity == 'white'
+      @moves.push([x + 1, y - 1]) if blocked_moves[x + 1][y - 1].identity == 'white'
     end
 
     if (x + 1).between?(0, 7)
       temp.push([x + 1, y]) if blocked_moves[x + 1][y] == '  '
     end
     temp.push([x + 2, y]) if @history.empty?
-    @moves = temp
+    moves = temp
   end
 end
 

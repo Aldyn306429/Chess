@@ -11,4 +11,18 @@ module Clean_String
     return false if array[0].between?(0, 7) && array[1].between?(0, 7)
     true
   end
+  
+  def check_length(string)
+    return true if string.strip.length != 2
+    false
+  end
+
+  def no_colon(string)
+    string.split('').each do |letter|
+      if letter == ':'
+        return false
+      end
+    end
+    true
+  end
 end
