@@ -317,6 +317,20 @@ describe 'Tests' do
         subject.make_move('A4 : D7', 'White')
         expect(subject.king_in_check).to eql(true)
       end
+      it 'Returns true when pawn checks the king(1)' do
+        subject.make_move('E2 : E4', 'White')
+        subject.make_move('E4 : E5', 'White')
+        subject.make_move('E5 : E6', 'White')
+        subject.make_move('E6 : D7', 'White')
+        expect(subject.king_in_check).to eql(true)
+      end
+      it 'Returns true when pawn checks the king(2)' do
+        subject.make_move('E7 : E5', 'Black')
+        subject.make_move('E5 : E4', 'Black')
+        subject.make_move('E4 : E3', 'Black')
+        subject.make_move('E3 : D2', 'Black')
+        expect(subject.king_in_check).to eql(true)
+      end
       it 'Returns false when king is not checked' do
         subject.make_move('C2 : C3', 'White')
         subject.make_move('D7 : D6', 'Black')
@@ -369,6 +383,25 @@ describe 'Tests' do
         subject.make_move('B7 : B5')
         subject.make_move('C5 : B6')
         expect(subject.board.pieces[4][1] == '  ').to eql(true)
+      end
+    end
+    context 'Pawn Promotion' do
+      subject { Game.new }
+      it 'Promotes correctly on the white side' do
+        subject.make_move('B7 : B5')
+        subject.make_move('B5 : B4')
+        subject.make_move('B4 : B3')
+        subject.make_move('B3 : C2')
+        subject.make_move('C2 : B1', 'Black', 4)
+        expect(subject.board.pieces[7][1].piece).to eql("\u265e ".dark_piece)
+      end
+      it 'Promotes correctly on the black side' do
+        subject.make_move('B2 : B4')
+        subject.make_move('B4 : B5')
+        subject.make_move('B5 : B6')
+        subject.make_move('B6 : C7')
+        subject.make_move('C7 : B8', 'White', 3)
+        expect(subject.board.pieces[0][1].piece).to eql("\u265d ".light_piece)
       end
     end
   end
