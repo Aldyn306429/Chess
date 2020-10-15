@@ -21,7 +21,7 @@ class Game
   end
 
   def intro
-    start_game
+    # start_game
     # for i in 0..7
     #   for j in 0..7
     #     if @board.pieces[i][j] != '  '
@@ -36,14 +36,21 @@ class Game
       puts @board.display_board
       puts 'Make a move'
       response = gets.chomp
-      until make_move(response)
+      until make_move(response, 'White')
+        puts 'Make a move'
+        response = gets.chomp
+      end
+      puts @board.display_board
+      puts 'Make a move'
+      response = gets.chomp
+      until make_move(response, 'Black')
         puts 'Make a move'
         response = gets.chomp
       end
     end
   end
 
-  def make_move(string, side = nil)
+  def make_move(string, side = nil, rspec_test = nil)
     if no_colon(string)
       puts "You're missing a colon"
       return false
@@ -174,11 +181,21 @@ class Game
 
     @board.pieces[end_pos[1]][end_pos[0]] = @board.pieces[start_pos[1]][start_pos[0]]
     @board.pieces[start_pos[1]][start_pos[0]] = '  '
-    promotion(@board.pieces)
+    promotion(@board.pieces, rspec_test)
     @board.make_board
-    if check?(@board.pieces[end_pos[1]][end_pos[0]].possible_moves(end_pos[1], end_pos[0], @board.pieces), @board.pieces, side) 
+    check = check?(@board.pieces, side)
+    
+    if @king_in_check
+      # escape_check(start_pos, end_pos, @board.pieces, side)
+    end
+
+    unless check.empty?
       puts "<----------Check!---------->"
       @king_in_check = true
+      if checkmate?(side, check, @board.pieces)
+        puts "Checkmate"
+        @victory = true
+      end
     end
     true
   end
