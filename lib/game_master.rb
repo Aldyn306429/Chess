@@ -85,11 +85,10 @@ module Game_Rules
 
     temp2 = 'Black' if side == 'White'
     temp2 = 'White' if side == 'Black'
-    test2 = sightline(temp2, board)
-    result += 1 if mate_check_2(attack_piece, test2, king_pos, board, side)
-
-    test3 = moveable_pieces(test1, temp2, board)
-    result += 1 if mate_check_3(test3, board, king_pos, attack_piece)
+    test3 = moveable_pieces(board, side)
+    
+    result += 1 if mate_check_2(attack_piece, test3, king_pos, board, side)
+    result += 1 if mate_check_3(test3, board, king_pos, attack_piece, side)
 
     result == 3 ? true : false
   end
@@ -105,29 +104,35 @@ module Game_Rules
     true
   end
 
-  def mate_check_2(attack_piece, sightline, king_pos, board, side)
+  def mate_check_2(attack_piece, pieces, king_pos, board, side)
     return true if attack_piece.size > 1
-
     test_array = []
-    sightline.each do |pos|
-      test_array.push(pos) if pos == attack_piece[0]
+    pieces.each do |pos|
+      p_moves = board[pos[0]][pos[1]].possible_moves(pos[0], pos[1], board)
+      test_array.push(pos) if p_moves.include?(attack_piece[0]) && escape_check(pos, attack_piece[0], board, side) == false
     end
-    
-    return false if test_array.size > 1
-    return true if test_array.empty?
 
-    if (attack_piece[0][0] - king_pos[0]).between?(-1, 1) && (attack_piece[0][1] - king_pos[1]).between?(-1, 1)
-      escape_check(king_pos, attack_piece[0], board, side) ? true : false
+    return true if test_array.empty?
+    return false if test_array.size > 1
+
+    if (attack_piece[0][0] - king_pos[0]).between?(-1, 1) && (attack_piece[0][1] - king_pos[1]).between?(-1, 1) && test_array.size == 1
+      if escape_check(king_pos, attack_piece[0], board, side)
+        return true
+      else
+        return false
+      end
     end
+
+    true
   end
 
-  def mate_check_3(moveable, board, king_pos, atkPiece)
-    return true if moveable.empty? || attack_piece.size > 1
-      
-    a = [attack_piece[1], king_pos[1]].max
-    b = [attack_piece[1], king_pos[1]].min
-    c = [attack_piece[0], king_pos[0]].max
-    d = [attack_piece[0], king_pos[0]].min
+  def mate_check_3(moveable, board, king_pos, atkPiece, side)
+    return true if moveable.empty? || atkPiece.size > 1
+    
+    a = [atkPiece[0][1], king_pos[1]].max
+    b = [atkPiece[0][1], king_pos[1]].min
+    c = [atkPiece[0][0], king_pos[0]].max
+    d = [atkPiece[0][0], king_pos[0]].min
 
     temp_array = []
 
@@ -139,12 +144,14 @@ module Game_Rules
 
     test_array = []
     temp_array.each do |pos|
-      test_array.push(pos) if board[atkPiece[0]][atkPiece[1]].moves.include?(pos)
+      test_array.push(pos) if board[atkPiece[0][0]][atkPiece[0][1]].moves.include?(pos)
     end
 
     moveable_array = []
     moveable.each do |pos|
-      moveable_array.push(board[pos[0]][pos[1]].possible_moves(pos[0], pos[1], board))
+      p_moves = board[pos[0]][pos[1]].possible_moves(pos[0], pos[1], board)
+      next if p_moves.empty?
+      moveable_array.push(p_moves) if escape_check(pos, p_moves[0], board, side) == false
     end
 
     moveable_array = moveable_array.flatten(1)
@@ -167,20 +174,25 @@ module Game_Rules
       board[end_pos[0]][end_pos[1]] = memoryB
       return true
     else
+      board[start_pos[0]][start_pos[1]] = memoryA
+      board[end_pos[0]][end_pos[1]] = memoryB
       return false
     end
   end
 
-  def moveable_pieces(sightline, test, board)
+  def moveable_pieces(board, side)
+    test = 'white' if side == 'Black'
+    test = 'black' if side == 'White'
     moveable = []
+
     for i in 0..7 do
       for j in 0..7 do
-        if board[i][j] != '  ' && sightline.include?([i, j]) == false
-          moveable.push(board[i][j]) if board[i][j].identity == test
+        if board[i][j] != '  '
+          moveable.push([i, j]) if board[i][j].identity == test
         end
       end
     end
-
+    
     moveable
   end
 
@@ -240,11 +252,47 @@ module Game_Rules
     end
   end
 
+  def stalemate(board, side)
+    pieces = moveable_pieces(board, side)
+    pieces.each do |pos|
+      moves = board[pos[0]][pos[1]].possible_moves(pos[0], pos[1], board)
+      moves.each do |test|
+        return false if escape_check(pos, test, board, side) == false
+      end
+    end
+
+    true
+  end
+
+  def king_no_king(king_pos, end_pos, board, side)
+    test = "\u265a ".dark_piece if side == 'Black'
+    test = "\u265a ".light_piece if side == 'White'
+
+    if side == 'Black'
+      test_moves = board[king_pos[0]][king_pos[1]].possible_moves(end_pos[0], end_pos[1], board)
+      test_moves.each do |pos|
+        if board[pos[0]][pos[1]] != '  '
+          return true if board[pos[0]][pos[1]].piece == "\u265a ".light_piece
+        end
+      end
+    end
+    if side == 'White'
+      test_moves = board[king_pos[0]][king_pos[1]].possible_moves(end_pos[0], end_pos[1], board)
+      test_moves.each do |pos|
+        if board[pos[0]][pos[1]] != '  '
+          return true if board[pos[0]][pos[1]].piece == "\u265a ".dark_piece
+        end
+      end
+    end
+    false
+  end
+
   private
   
   # For the user input regarding the promotion for the pawn
   def ask_for_promotion
-    puts 'What do you want to promote the pawn to?'
+    puts "\n<--------Promotion-------->"
+    puts "What do you want to promote the pawn to?"
     puts "\n1. Queen\n2. Rook\n3. Bishop\n4. Knight" 
     puts "\nInput a number: "
     answer = gets.chomp.to_i

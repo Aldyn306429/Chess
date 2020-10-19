@@ -42,7 +42,7 @@ class Black_Pawn
     if (x + 1).between?(0, 7)
       temp.push([x + 1, y]) if blocked_moves[x + 1][y] == '  '
     end
-    temp.push([x + 2, y]) if @history.empty?
+    temp.push([x + 2, y]) if @history.empty? && blocked_moves[x + 2][y] == '  ' && blocked_moves[x + 1][y] == '  '
     moves = temp
   end
 end
@@ -85,7 +85,7 @@ class White_Pawn
     if (x - 1).between?(0, 7)
       temp.push([x - 1, y]) if blocked_moves[x - 1][y] == '  '
     end
-    temp.push([x - 2, y]) if @history.empty?
+    temp.push([x - 2, y]) if @history.empty? && blocked_moves[x - 2][y] == '  ' && blocked_moves[x - 1][y] == '  '
     @moves = temp
   end
 end

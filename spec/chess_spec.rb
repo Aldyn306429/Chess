@@ -5,6 +5,7 @@ require './lib/board.rb'
 require './lib/game_master.rb'
 require './lib/chess.rb'
 require './lib/string.rb'
+require './lib/instructions.rb'
 
 describe 'Tests' do
   context 'Pieces' do
@@ -402,6 +403,55 @@ describe 'Tests' do
         subject.make_move('B6 : C7')
         subject.make_move('C7 : B8', 'White', 3)
         expect(subject.board.pieces[0][1].piece).to eql("\u265d ".light_piece)
+      end
+    end
+    context 'Checkmate' do
+      subject { Game.new }
+      it 'Returns false when checkmate is false (Simple)' do
+        subject.make_move('E2 : E4', 'White')
+        subject.make_move('E7 : E5', 'Black')
+        subject.make_move('D1 : F3', 'White')
+        subject.make_move('D7 : D6', 'Black')
+        subject.make_move('F3 : F7', 'White')
+        if subject.king_in_check
+          expect(subject.victory).to eql(false)
+        else
+          return false
+        end
+      end
+      it 'Returns false when checkmate is false (Complicated)' do
+        subject.make_move('E2 : E4', 'White')
+        subject.make_move('D7 : D5', 'Black')
+        subject.make_move('F1 : B5', 'White')
+        if subject.king_in_check
+          expect(subject.victory).to eql(false)
+        else
+          return false
+        end
+      end
+      it 'Returns true when checkmate is true (Simple)' do
+        subject.make_move('E2 : E4', 'White')
+        subject.make_move('E7 : E5', 'Black')
+        subject.make_move('D1 : F3', 'White')
+        subject.make_move('D7 : D6', 'Black')
+        subject.make_move('F1 : C4', 'White')
+        subject.make_move('A7 : A5', 'Black')
+        subject.make_move('F3 : F7', 'White')
+        expect(subject.victory).to eql(true)
+      end
+      it 'Returns true when checkmate is true (Complicated)' do
+        subject.make_move('D2 : D4', 'White')
+        subject.make_move('C7 : C6', 'Black')
+        subject.make_move('E2 : E4', 'White')
+        subject.make_move('D7 : D5', 'Black')
+        subject.make_move('B1 : C3', 'White')
+        subject.make_move('D5 : E4', 'Black')
+        subject.make_move('C3 : E4', 'White')
+        subject.make_move('B8 : D7', 'Black')
+        subject.make_move('D1 : E2', 'White')
+        subject.make_move('G8 : F6', 'Black')
+        subject.make_move('E4 : D6', 'White')
+        expect(subject.victory).to eql(true)
       end
     end
   end
